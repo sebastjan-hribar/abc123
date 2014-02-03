@@ -1,7 +1,6 @@
 #encoding: utf-8
 require_relative "abc123/version"
 require 'green_shoes'
-require 'nkf'
 
 module Abc123
 
@@ -149,7 +148,7 @@ class Learn < Shoes
       @words_prep_flow = flow do
         image("../images/home.png", height: 80, width: 80, margin_right: 20).click{visit '/'}
 
-        @words_images = ["mačka", "pes", "vlak", "žoga"]
+        @words_images = ["MAČKA", "PES", "VLAK", "ŽOGA"]
         @word_sample = @words_images.sample
         @word_letters = []
         @alphabet = ["A", "B", "C", "Č", "D", "E", "F", "G", "H", "I", "J", "K",
@@ -172,12 +171,10 @@ class Learn < Shoes
 
       flow do
         @alphabet.each do
-          |letter| button letter, height: 80, width: 80 do
+          |letter| button letter, height: 50, width: 50 do
               @word_letters << letter
-              @input_display.append do
-                flow do
-                  para letter
-                end
+              @letters_display.append do
+                subtitle letter
               end
           end
         end
@@ -185,8 +182,7 @@ class Learn < Shoes
 
       image("../images/go.png", height: 100, width: 100, margin_right: 20).click{
         @word_input = @word_letters.join
-        alert @word_input.downcase
-          if @word_input == @word_sample.upcase
+          if @word_input == @word_sample
             @word_right_answers.append do
               image "../images/right.png"
             end
@@ -197,6 +193,7 @@ class Learn < Shoes
           end
           @word_letters = []
           @word_input = ""
+          @input_display.append{button @word_sample, height: 50, width: 150}
           }
 
       image("../images/restart.png", height: 100, width: 100).click{
@@ -213,7 +210,11 @@ class Learn < Shoes
     # Input display flow start           #
     ######################################
       @input_display = flow do
+        background lightblue
         subtitle "Črke", :align => "center"
+
+        @letters_display = flow do
+        end
       end
     ######################################
     # Input display flow end             #
@@ -223,7 +224,8 @@ class Learn < Shoes
     ######################################
     # Word Rewards flow start            #
     ######################################
-      @word_rewards_flow = flow  margin: 10 do
+      @word_rewards_flow = flow do
+        background goldenrod
         subtitle "Nagrade", :align => "center"
 
         @word_right_answers = flow do
