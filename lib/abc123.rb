@@ -10,36 +10,36 @@ class Learn < Shoes
   url '/learn_addition',            :learn_addition
   url '/learn_words',               :learn_words
 
-#################
-# index start   #
-#################
+#####################
+# index url start   #
+#####################
   def index
 
     background cornsilk
     title "Uči se z mano", align: "center"
 
     flow do
-      image("../images/horse.png", height: 250, width: 250)
-      math = subtitle "Številke in računanje", margin: 40, align: "center"
+      image("../images/horse.png", height: 200, width: 200)
+      math = subtitle "Številke in črke", margin: 40, align: "center"
 
       image("../images/maths.png", height: 150, width: 150, margin_right: 20).click{visit '/learn_addition'}
 
       image("../images/abc.png", height: 150, width: 150).click{visit '/learn_words'}
     end
   end
-#################
-# index end     #
-#################
+#####################
+# index url end     #
+#####################
 
 
-########################
-# learn_addition start #
-########################
+############################
+# learn addition url start #
+############################
   def learn_addition
 
     background cornsilk
 
-      image("../images/home.png", height: 100, width: 100, margin_right: 20).click{visit '/'}
+      image("../images/home.png", height: 80, width: 80, margin_right: 20).click{visit '/'}
 
 
     ######################################
@@ -133,29 +133,52 @@ class Learn < Shoes
     ######################################
 
     end
-########################
-# learn_addition end   #
-########################
+############################
+# learn addition url end   #
+############################
 
 
-########################
-# learn_words start    #
-########################
+############################
+# learn words url start    #
+############################
     def learn_words
-      image("../images/home.png", height: 150, width: 150, margin_right: 20).click{visit '/'}
+      background cornsilk
+    ######################################
+    # Words preparation flow start       #
+    ######################################
+      @words_prep_flow = flow do
+        image("../images/home.png", height: 80, width: 80, margin_right: 20).click{visit '/'}
 
-      @words_images = ["mačka", "pes", "vlak", "žoga"]
-      @word_sample = @words_images.sample
-      @word_letters = []
-      @alphabet = ["A", "B", "C", "Č", "D", "E", "F", "G", "H", "I", "J", "K",
-       "L", "M", "N", "O", "P", "R", "S", "Š", "T", "U", "V", "Z", "Ž"]
+        @words_images = ["mačka", "pes", "vlak", "žoga"]
+        @word_sample = @words_images.sample
+        @word_letters = []
+        @alphabet = ["A", "B", "C", "Č", "D", "E", "F", "G", "H", "I", "J", "K",
+         "L", "M", "N", "O", "P", "R", "S", "Š", "T", "U", "V", "Z", "Ž"]
+      end
+    ######################################
+    # Words preparation flow end         #
+    ######################################
 
-      image "../images/#{@word_sample}.png", height: 250, width: 250
+
+    ######################################
+    # Sample word image flow start       #
+    ######################################
+      @sample_flow = flow do
+        image "../images/#{@word_sample}.png", margin_bottom: 15, height: 200, width: 200
+      end
+    ######################################
+    # Sample word image flow end         #
+    ######################################
 
       flow do
         @alphabet.each do
           |letter| button letter, height: 80, width: 80 do
               @word_letters << letter
+              @input_display.append do
+                flow do
+                  para letter
+                end
+              end
           end
         end
       end
@@ -172,7 +195,29 @@ class Learn < Shoes
               image "../images/wrong.png"
             end
           end
+          @word_letters = []
+          @word_input = ""
           }
+
+      image("../images/restart.png", height: 100, width: 100).click{
+        @sample_flow.clear
+        @input_display.clear
+        @word_sample = @words_images.sample
+        @sample_flow.append do
+          image "../images/#{@word_sample}.png", height: 250, width: 250
+        end
+      }
+
+
+    ######################################
+    # Input display flow start           #
+    ######################################
+      @input_display = flow do
+        subtitle "Črke", :align => "center"
+      end
+    ######################################
+    # Input display flow end             #
+    ######################################
 
 
     ######################################
@@ -194,12 +239,10 @@ class Learn < Shoes
     # Word Rewards flow en               #
     ######################################
 
-
-
     end
-########################
-# learn_words end      #
-########################
+############################
+# learn words url end      #
+############################
 
   end #class Shoes end
 
