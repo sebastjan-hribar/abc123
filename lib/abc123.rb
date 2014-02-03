@@ -193,7 +193,7 @@ class Learn < Shoes
           end
           @word_letters = []
           @word_input = ""
-          @input_display.append{button @word_sample, height: 50, width: 150}
+          @input_display.append{subtitle @word_sample, margin_top: 20, height: 50, width: 150}
           }
 
       image("../images/restart.png", height: 100, width: 100).click{
