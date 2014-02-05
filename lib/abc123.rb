@@ -15,11 +15,11 @@ class Learn < Shoes
   def index
 
     background cornsilk
-    title "Uči se z mano", align: "center"
+    title "UČI SE Z MANO", align: "center"
 
     flow do
       image("../images/horse.png", height: 200, width: 200)
-      math = subtitle "Številke in črke", margin: 40, align: "center"
+      math = subtitle "ŠTEVILKE IN ČRKE", margin: 40, align: "center"
 
       image("../images/maths.png", height: 150, width: 150, margin_right: 20).click{visit '/learn_addition'}
 
@@ -38,7 +38,7 @@ class Learn < Shoes
 
     background cornsilk
 
-      image("../images/home.png", height: 80, width: 80, margin_right: 20).click{visit '/'}
+
 
 
     ######################################
@@ -47,27 +47,29 @@ class Learn < Shoes
       @prep_flow = flow do
         @numbers_addition = [0,1,2,3,4,5]
         @all_images = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        
+        image("../images/home.png", height: 80, width: 80, margin_right: 80).click{visit '/'}
 
-        image("../images/math.png", height: 60, width: 60).click{
+        image("../images/math.png", height: 80, width: 80).click{
           @input_1 = @numbers_addition.sample.to_s
           @input_2 = @numbers_addition.sample.to_s
 
           @expression_flow.clear
           @solution_flow.clear
           @expression_flow.append do
-            image("../images/#{@input_1}.png", height: 60, width: 60)
-            image("../images/add.png", height: 60, width: 60)
-            image("../images/#{@input_2}.png", height: 60, width: 60)
-            image("../images/equals.png", height: 60, width: 60)
-            image("../images/question.png", height: 60, width: 60)
+            image("../images/#{@input_1}.png", margin_right: 15, height: 60, width: 60)
+            image("../images/add.png", margin_right: 15, height: 60, width: 60)
+            image("../images/#{@input_2}.png", margin_right: 15, height: 60, width: 60)
+            image("../images/equals.png", margin_right: 15, height: 60, width: 60)
+            image("../images/question.png", margin_right: 15, height: 60, width: 60)
           end
 
           @result = @input_1.to_i + @input_2.to_i
 
           @solution_flow.append do
-            subtitle "Izberi pravilen odgovor:", margin: 15, :align => "center"
+            title "IZBERI PRAVILEN ODGOVOR:", margin_top: 25,margin_bottom: 25, :align => "center"
             @all_images.each do
-              |img| image("../images/#{img}.png", margin: 20, height: 50, width: 50).click{
+              |img| image("../images/#{img}.png", margin_right: 30, margin_bottom: 30, height: 70, width: 70).click{
               @solution = img.to_i
                 if @result == @solution
                   @right_answers.append do
@@ -93,8 +95,8 @@ class Learn < Shoes
     ######################################
     # Calculation flow start             #
     ######################################
-      @calc_flow = flow margin_top: 20 do
-        @expression_flow = flow margin_left: 15 do
+      @calc_flow = flow margin_top: 50, margin_bottom: 50 do
+        @expression_flow = flow do
         end
       end
     ######################################
@@ -116,7 +118,7 @@ class Learn < Shoes
     # Rewards flow start                 #
     ######################################
       @rewards_flow = flow  margin: 10 do
-        subtitle "Nagrade", :align => "center"
+        subtitle "NAGRADE", :align => "center"
 
         @right_answers = flow do
         border black
@@ -173,7 +175,7 @@ class Learn < Shoes
         @alphabet.each do
           |letter| button letter, height: 50, width: 50 do
               @word_letters << letter
-              @letters_display.append do
+              @word_display.append do
                 subtitle letter
               end
           end
@@ -193,12 +195,12 @@ class Learn < Shoes
           end
           @word_letters = []
           @word_input = ""
-          @input_display.append{subtitle @word_sample, margin_top: 20, height: 50, width: 150}
+          @word_display.append{subtitle @word_sample, margin_top: 20, height: 50, width: 150}
           }
 
       image("../images/restart.png", height: 100, width: 100).click{
         @sample_flow.clear
-        @input_display.clear
+        @word_display.clear
         @word_sample = @words_images.sample
         @sample_flow.append do
           image "../images/#{@word_sample}.png", height: 250, width: 250
@@ -211,9 +213,8 @@ class Learn < Shoes
     ######################################
       @input_display = flow do
         background lightblue
-        subtitle "Črke", :align => "center"
-
-        @letters_display = flow do
+        subtitle "ČRKE", :align => "center"
+        @word_display = flow do
         end
       end
     ######################################
@@ -224,9 +225,8 @@ class Learn < Shoes
     ######################################
     # Word Rewards flow start            #
     ######################################
-      @word_rewards_flow = flow do
-        background goldenrod
-        subtitle "Nagrade", :align => "center"
+      @word_rewards_flow = flow margin: 10 do
+        subtitle "NAGRADE", :align => "center"
 
         @word_right_answers = flow do
         border black
