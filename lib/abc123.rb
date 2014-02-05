@@ -176,7 +176,7 @@ class Learn < Shoes
           |letter| button letter, height: 50, width: 50 do
               @word_letters << letter
               @word_display.append do
-                subtitle letter
+                subtitle letter, height: 50, width: 30
               end
           end
         end
@@ -195,12 +195,13 @@ class Learn < Shoes
           end
           @word_letters = []
           @word_input = ""
-          @word_display.append{subtitle @word_sample, margin_top: 20, height: 50, width: 150}
+          @word_solution_flow.append{subtitle @word_sample, margin_top: 20, height: 50, width: 150}
           }
 
       image("../images/restart.png", height: 100, width: 100).click{
         @sample_flow.clear
         @word_display.clear
+        @word_solution_flow.clear
         @word_sample = @words_images.sample
         @sample_flow.append do
           image "../images/#{@word_sample}.png", height: 250, width: 250
@@ -215,6 +216,8 @@ class Learn < Shoes
         background lightblue
         subtitle "ČRKE", :align => "center"
         @word_display = flow do
+        end
+        @word_solution_flow = flow do
         end
       end
     ######################################
