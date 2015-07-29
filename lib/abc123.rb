@@ -1,13 +1,16 @@
 #encoding: utf-8
 require_relative "abc123/version"
+require_relative "abc123/helpers_math.rb"
 require 'green_shoes'
+
+include Helpers
 
 module Abc123
 
 class Learn < Shoes
-  url '/',                          :index
-  url '/learn_addition',            :learn_addition
-  url '/learn_words',               :learn_words
+  url '/',                         :index
+  url '/learn_math',               :learn_math
+  url '/learn_words',              :learn_words
 
 #####################
 # index url start   #
@@ -15,14 +18,13 @@ class Learn < Shoes
   def index
 
     background cornsilk
-    title "UČI SE Z MANO", align: "center"
 
     flow do
-      image("../images/horse.png", height: 200, width: 200)
-      math = subtitle "ŠTEVILKE IN ČRKE", margin: 40, align: "center"
-
-      image("../images/maths.png", height: 150, width: 150, margin_right: 20).click{visit '/learn_addition'}
-
+      image("../images/education.png", height: 300, width: 300, margin_left: 330)
+    end
+    
+    flow do
+      image("../images/maths.png", height: 150, width: 150, margin_right: 20).click{visit '/learn_math'}
       image("../images/abc.png", height: 150, width: 150).click{visit '/learn_words'}
     end
   end
@@ -34,42 +36,57 @@ class Learn < Shoes
 ############################
 # learn addition url start #
 ############################
-  def learn_addition
+  def learn_math
 
     background cornsilk
 
-
-
+        #@numbers = (0..9)
+        @all_images = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
 
     ######################################
     # Preparation flow start             #
     ######################################
       @prep_flow = flow do
-        @numbers_addition = [0,1,2,3,4,5]
-        @all_images = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-        
+
+        image("../images/add.png", height: 80, width: 80).click{
+          @operator = "add"
+        }
+        image("../images/subtract.png", height: 80, width: 80).click{
+          @operator = "subtract" 
+        }
+        image("../images/multiply.png", height: 80, width: 80).click{
+          @operator = "multiply" 
+        }
+        image("../images/divide.jpg", height: 120, width: 120).click{
+          @operator = "divide" 
+        }
+
         image("../images/home.png", height: 80, width: 80, margin_right: 80).click{visit '/'}
 
         image("../images/math.png", height: 80, width: 80).click{
-          @input_1 = @numbers_addition.sample.to_s
-          @input_2 = @numbers_addition.sample.to_s
+          
+          
+          @input_1 = input1
+          @input_2 = input2
 
           @expression_flow.clear
           @solution_flow.clear
           @expression_flow.append do
-            image("../images/#{@input_1}.png", margin_right: 15, height: 60, width: 60)
-            image("../images/add.png", margin_right: 15, height: 60, width: 60)
-            image("../images/#{@input_2}.png", margin_right: 15, height: 60, width: 60)
+            image("../images/numbers/#{@input_1.to_s}.png", margin_right: 15, height: 60, width: 60)
+            image("../images/#{@operator}.png", margin_right: 15, height: 60, width: 60)
+            image("../images/numbers/#{@input_2.to_s}.png", margin_right: 15, height: 60, width: 60)
             image("../images/equals.png", margin_right: 15, height: 60, width: 60)
             image("../images/question.png", margin_right: 15, height: 60, width: 60)
           end
 
-          @result = @input_1.to_i + @input_2.to_i
-
+          @result = -1
+          while @result < 0 do
+            @result = compute(@operator, @input_1, @input_2)
+          end
           @solution_flow.append do
             title "IZBERI PRAVILEN ODGOVOR:", margin_top: 25,margin_bottom: 25, :align => "center"
             @all_images.each do
-              |img| image("../images/#{img}.png", margin_right: 30, margin_bottom: 30, height: 70, width: 70).click{
+              |img| image("../images/numbers/#{img}.png", margin_right: 30, margin_bottom: 30, height: 70, width: 70).click{
               @solution = img.to_i
                 if @result == @solution
                   @right_answers.append do
@@ -133,7 +150,7 @@ class Learn < Shoes
     # Rewards flow end                   #
     ######################################
 
-    end
+  end
 ############################
 # learn addition url end   #
 ############################
@@ -150,11 +167,13 @@ class Learn < Shoes
       @words_prep_flow = flow do
         image("../images/home.png", height: 80, width: 80, margin_right: 20).click{visit '/'}
 
-        @words_images = ["MAČKA", "PES", "VLAK", "ŽOGA"]
+        @words_images = Dir.entries("../images/letters").each {|word| word.gsub!(".png", "")}
+        @words_images.delete(".")
+        @words_images.delete("..")
         @word_sample = @words_images.sample
         @word_letters = []
         @alphabet = ["A", "B", "C", "Č", "D", "E", "F", "G", "H", "I", "J", "K",
-         "L", "M", "N", "O", "P", "R", "S", "Š", "T", "U", "V", "Z", "Ž"]
+         "L", "M", "N", "O", "P", "R", "S", "Š", "T", "U", "V", "X", "Y", "Z", "Ž"]
       end
     ######################################
     # Words preparation flow end         #
@@ -165,7 +184,7 @@ class Learn < Shoes
     # Sample word image flow start       #
     ######################################
       @sample_flow = flow do
-        image "../images/#{@word_sample}.png", margin_bottom: 15, height: 200, width: 200
+        image "../images/letters/#{@word_sample}.png", margin_bottom: 15, height: 200, width: 200
       end
     ######################################
     # Sample word image flow end         #
@@ -204,7 +223,7 @@ class Learn < Shoes
         @word_solution_flow.clear
         @word_sample = @words_images.sample
         @sample_flow.append do
-          image "../images/#{@word_sample}.png", height: 250, width: 250
+          image "../images/letters/#{@word_sample}.png", height: 250, width: 250
         end
       }
 
@@ -249,7 +268,7 @@ class Learn < Shoes
 # learn words url end      #
 ############################
 
-  end #class Shoes end
+end #class Shoes end
 
   Shoes.app title: "Abc123", height: 1000, width: 850
 
